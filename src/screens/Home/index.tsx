@@ -8,6 +8,7 @@ import { Header } from '../../components/Header';
 import { useAuth } from '../../hooks/auth';
 import { useFocusEffect } from '@react-navigation/native';
 import { NotFound } from '../../components/NotFound';
+import { Alert } from 'react-native';
 
 interface PostProps {
   updated: boolean;
@@ -31,7 +32,7 @@ function Home() {
 
           setPosts(response.data);
         } catch (error) {
-          console.log(error);
+          Alert.alert('Erro', 'Erro ao carregar posts: ' + error);
         }
       }
 
