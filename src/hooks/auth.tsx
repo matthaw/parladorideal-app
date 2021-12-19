@@ -1,10 +1,20 @@
-import React, { createContext, Dispatch, SetStateAction, useContext, useState } from 'react';
-import { api } from '../services/api';
+import React, { createContext, useContext, useState } from 'react';
+import jwtDecode from 'jwt-decode';
 import { getLocalToken, setLocalToken } from '../utils/util';
+
+interface IUser {
+  payload: {
+    name: string;
+    email: string;
+  };
+  iat: number;
+  exp: number;
+}
 
 interface IAuthContextData {
   token: string;
   setToken: any;
+  user: IUser;
 }
 
 interface AuthProviderProps {
@@ -14,13 +24,30 @@ interface AuthProviderProps {
 const AuthContext = createContext({} as IAuthContextData);
 
 function AuthProvider({ children }: AuthProviderProps) {
-  const [token, setToken] = useState('');
+  const [auth, setAuth] = useState<IAuthContextData>({} as IAuthContextData);
 
   getLocalToken().then((res) => {
-    if (res) setToken(res);
+    if (res) {
+      const user = jwtDecode<IUser>(res);
+
+      if (user.exp && new Date(user.exp * 1000) <= new Date()) {
+        setLocalToken('');
+        setAuth({} as IAuthContextData);
+      }
+
+      setAuth({
+        token: res,
+        setToken: setLocalToken,
+        user: user,
+      });
+    }
   });
 
-  return <AuthContext.Provider value={{ token, setToken }}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ token: auth.token, setToken: setAuth, user: auth.user }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 function useAuth() {
