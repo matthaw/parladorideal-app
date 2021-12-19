@@ -1,8 +1,6 @@
-import { FlatList } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
-import { RFPercentage, RFValue } from 'react-native-responsive-fontsize';
+import { ScrollView } from 'react-native';
+import { RFValue } from 'react-native-responsive-fontsize';
 import styled from 'styled-components/native';
-import { PostDTO } from '../../dtos/PostDTO';
 
 export const Container = styled.View`
   flex: 1;
@@ -11,6 +9,7 @@ export const Container = styled.View`
 
 export const PostList = styled.SafeAreaView`
   flex: 1;
+  padding-bottom: ${RFValue(8)}px;
 `;
 
 export const Posts = styled(ScrollView)`
