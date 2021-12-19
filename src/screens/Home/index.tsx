@@ -1,4 +1,6 @@
 import React, { useCallback, useState } from 'react';
+import { Alert } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 
 import { api } from '../../services/api';
 import { Post } from '../../components/Post';
@@ -6,14 +8,7 @@ import { Container, PostList, Posts } from './styles';
 import { PostDTO } from '../../dtos/PostDTO';
 import { Header } from '../../components/Header';
 import { useAuth } from '../../hooks/auth';
-import { useFocusEffect } from '@react-navigation/native';
 import { NotFound } from '../../components/NotFound';
-import { Alert } from 'react-native';
-
-interface PostProps {
-  updated: boolean;
-  title: string;
-}
 
 function Home() {
   const { token } = useAuth();
