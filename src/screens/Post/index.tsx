@@ -2,6 +2,7 @@ import { RouteProp } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 
 import { iNavigationProps } from '../../../types';
+import { ActionForm } from '../../components/ActionForm';
 import { Button } from '../../components/Button';
 import { Header } from '../../components/Header';
 import { TextArea } from '../../components/TextArea';
@@ -9,11 +10,11 @@ import { useAuth } from '../../hooks/auth';
 import { api } from '../../services/api';
 import { Form, Fields, Container, ErrorMessage } from './styles';
 
-export interface Props extends iNavigationProps {
-  route?: RouteProp<any, any>;
+export interface IPostProps extends iNavigationProps {
+  route: RouteProp<any, any>;
 }
 
-function Post({ route, navigation }: Props) {
+function Post({ route, navigation }: IPostProps) {
   const { token } = useAuth();
   const [content, setContent] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -22,7 +23,7 @@ function Post({ route, navigation }: Props) {
     setErrorMessage('');
     setContent('');
 
-    const post = route?.params?.post;
+    const post = route.params?.post;
 
     if (post) {
       setContent(post.content);
@@ -38,11 +39,15 @@ function Post({ route, navigation }: Props) {
       return;
     }
 
-    if (route?.params?.post) {
-      await update(route?.params?.post.id, content);
+    if (route.params?.post) {
+      await update(route.params.post.id, content);
     } else {
       await create(content);
     }
+  }
+
+  function resetParams() {
+    navigation.setParams({ post: null, action: 'Postar', title: 'Novo Post' });
   }
 
   async function create(content: string) {
@@ -79,9 +84,11 @@ function Post({ route, navigation }: Props) {
       );
       setContent('');
       setErrorMessage('');
+
+      resetParams();
+
       navigation.navigate('Posts');
     } catch (error) {
-      console.log(id);
       setErrorMessage('Erro ao atulizar novo post, tente novamente: ' + error);
     }
   }
@@ -106,6 +113,13 @@ function Post({ route, navigation }: Props) {
         </Fields>
 
         <Button title={route?.params!.action} onPress={handleSubmit} />
+        <ActionForm
+          onPress={() => {
+            resetParams();
+            navigation.navigate('Posts');
+          }}
+          title="Cancelar"
+        ></ActionForm>
       </Form>
     </Container>
   );

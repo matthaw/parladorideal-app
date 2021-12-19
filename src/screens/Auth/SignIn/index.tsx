@@ -4,12 +4,13 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { api } from '../../../services/api';
 import { Button } from '../../../components/Button';
-import { Container, Fields, ForgotPassword, ForgotPasswordText, Form } from './styles';
+import { Container, Fields, Form } from './styles';
 import { InputForm } from '../../../components/InputForm';
 import { Alert } from 'react-native';
 import { useAuth } from '../../../hooks/auth';
 import { setLocalToken } from '../../../utils/util';
 import { iNavigationProps } from '../../../../types';
+import { ActionForm } from '../../../components/ActionForm';
 
 interface iLoginProps extends iNavigationProps {}
 
@@ -28,7 +29,7 @@ const schema = yup.object().shape({
 });
 
 function SignIn({ navigation }: iLoginProps) {
-  const { setToken } = useAuth();
+  const { setToken, user } = useAuth();
 
   const {
     control,
@@ -42,9 +43,13 @@ function SignIn({ navigation }: iLoginProps) {
     try {
       const response = await api.post('/users/authenticate', form);
       await setLocalToken(response.data.token);
-      setToken(response.data.token);
+      setToken((prevState: any) => {
+        return {
+          ...prevState,
+          token: response.data.token,
+        };
+      });
     } catch (error) {
-      console.log(error);
       Alert.alert('Erro', 'Não foi possível realizar o login');
     }
   }
@@ -74,13 +79,12 @@ function SignIn({ navigation }: iLoginProps) {
         </Fields>
 
         <Button title="Entrar" onPress={handleSubmit(handleRegister)} />
-        <ForgotPassword
+        <ActionForm
           onPress={() => {
             navigation.navigate('SignUp');
           }}
-        >
-          <ForgotPasswordText>Criar minha conta</ForgotPasswordText>
-        </ForgotPassword>
+          title="Cadastrar-se"
+        />
       </Form>
     </Container>
   );

@@ -3,12 +3,13 @@ import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button } from '../../../components/Button';
-import { Back, BackText, Container, Fields, Form, Header, Title } from './styles';
+import { Container, Fields, Form, Header, Title } from './styles';
 import { Alert } from 'react-native';
 import { InputForm } from '../../../components/InputForm';
 import { api } from '../../../services/api';
-import { setLocalToken } from '../../../utils/util';
 import { iNavigationProps } from '../../../../types';
+import { useAuth } from '../../../hooks/auth';
+import { ActionForm } from '../../../components/ActionForm';
 
 interface iRegisterProps extends iNavigationProps {}
 
@@ -37,6 +38,7 @@ const schema = yup.object().shape({
 });
 
 function SignUp({ navigation }: iRegisterProps) {
+  const { token, setToken } = useAuth();
   const {
     control,
     handleSubmit,
@@ -48,10 +50,16 @@ function SignUp({ navigation }: iRegisterProps) {
   async function handleRegister(form: FormData) {
     try {
       const response = await api.post('/users', form);
-      await setLocalToken(response.data.token);
+      Alert.alert('Sucesso', 'Usuário cadastrado com sucesso!', [
+        {
+          text: 'Entrar',
+          onPress: async () => {
+            navigation.navigate('SignIn');
+          },
+        },
+      ]);
     } catch (error) {
-      console.log(error);
-      Alert.alert('Erro', 'Não foi possível realizar o login');
+      Alert.alert('Erro', 'Não foi possível realizar o cadastro');
     }
   }
 
@@ -103,13 +111,12 @@ function SignUp({ navigation }: iRegisterProps) {
         </Fields>
 
         <Button title="Cadastrar" onPress={handleSubmit(handleRegister)} />
-        <Back
+        <ActionForm
           onPress={() => {
             navigation.navigate('SignIn');
           }}
-        >
-          <BackText>Voltar</BackText>
-        </Back>
+          title="Já possui uma conta? Clique aqui para entrar"
+        />
       </Form>
     </Container>
   );

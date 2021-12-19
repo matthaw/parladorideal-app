@@ -37,13 +37,3 @@ export const Form = styled.View`
 export const Fields = styled.View`
   padding-bottom: 20px;
 `;
-
-export const ForgotPassword = styled(TouchableOpacity)`
-  margin-top: 24px;
-  align-items: flex-end;
-`;
-
-export const ForgotPasswordText = styled.Text`
-  font-family: ${({ theme }) => theme.fonts.bold};
-  color: ${({ theme }) => theme.colors.primary};
-`;
