@@ -14,7 +14,7 @@ import { iNavigationProps } from '../../../types';
 interface IUpdateProps extends iNavigationProps {}
 
 function Update({ navigation }: IUpdateProps) {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const [posts, setPosts] = useState<PostDTO[]>([]);
 
   useFocusEffect(
@@ -32,7 +32,7 @@ function Update({ navigation }: IUpdateProps) {
             return {
               ...post,
               user: {
-                name: 'matheus',
+                name: user.payload.name,
               },
             };
           });
@@ -71,7 +71,7 @@ function Update({ navigation }: IUpdateProps) {
 
   return (
     <Container>
-      <Header title="Bem vindo" />
+      <Header title="Minhas postagens" />
 
       <PostList>
         {posts.length > 0 ? (
