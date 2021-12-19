@@ -1,5 +1,4 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { NativeModules, Platform } from 'react-native';
 import moment from 'moment';
 import 'moment/min/locales';
 
@@ -14,12 +13,7 @@ async function setLocalToken(token: string) {
 }
 
 function formatDate(date: string) {
-  const locale =
-    Platform.OS === 'ios'
-      ? NativeModules.SettingsManager.settings.AppleLocale
-      : NativeModules.I18nManager.localeIdentifier;
-
-  return moment(date).locale(locale).format('LLL');
+  return moment(date).locale('pt-br').format('LLL');
 }
 
 export { getLocalToken, setLocalToken, formatDate };

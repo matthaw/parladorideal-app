@@ -62,7 +62,7 @@ function SignIn({ navigation }: iLoginProps) {
             name="email"
             control={control}
             placeholder="e-mail"
-            autoCapitalize="sentences"
+            autoCapitalize="none"
             autoCorrect={false}
             error={errors.email && errors.email.message}
           />
